@@ -1,29 +1,49 @@
-;; Initialize package sources
-(require 'package)
+;;; Startup
+;;; PACKAGE LIST
+(setq package-archives 
+      '(("melpa" . "https://melpa.org/packages/")
+        ("elpa" . "https://elpa.gnu.org/packages/")))
 
-;; Add MELPA to the list of package archives
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-
-;; Initialize the package system
+;;; BOOTSTRAP USE-PACKAGE
 (package-initialize)
-
-
-;; Install Evil if it's not already installed
-(unless (package-installed-p 'evil)
+(setq use-package-always-ensure t)
+(unless (package-installed-p 'use-package)
   (package-refresh-contents)
-  (package-install 'evil))
+  (package-install 'use-package))
+(eval-when-compile (require 'use-package))
 
-;; Enable Evil mode
-(require 'evil)
-(evil-mode 1)
+;;; UNDO
+;; Vim style undo not needed for emacs 28
+(use-package undo-fu)
+
+;;; Vim Bindings
+(use-package evil
+  :demand t
+  :bind (("<escape>" . keyboard-escape-quit))
+  :init
+  ;; allows for using cgn
+  ;; (setq evil-search-module 'evil-search)
+  (setq evil-want-keybinding nil)
+  ;; no vim insert bindings
+  (setq evil-undo-system 'undo-fu)
+  :config
+  (evil-mode 1))
+
+;;; Vim Bindings Everywhere else
+(use-package evil-collection
+  :after evil
+  :config
+  (setq evil-want-integration t)
+  (evil-collection-init))
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("bbb13492a15c3258f29c21d251da1e62f1abb8bbd492386a673dcfab474186af" "d7bf35cbf07fe90b420ca85625d4e1baff08fd64282562dde9dc788ed89c8242" default))
- '(package-selected-packages '(spacemacs-theme evil)))
+   '("7b8f5bbdc7c316ee62f271acf6bcd0e0b8a272fdffe908f8c920b0ba34871d98" default))
+ '(package-selected-packages
+   '(vertico evil-collection undo-fu use-package org-journal gruvbox-theme evil)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -31,25 +51,17 @@
  ;; If there is more than one, they won't work right.
  )
 
+(use-package gruvbox-theme
+  :config
+  (load-theme 'gruvbox))
 
-(load-theme 'spacemacs-dark t)
+(use-package vertico
+  :config
+  (vertico-mode))
 
-;; Install Org if it's not already installed
-(unless (package-installed-p 'org)
-  (package-refresh-contents)
-  (package-install 'org))
+(require 'org-bullets)
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 
-;; Require Org mode
-(require 'org)
-
-;; Automatically enable Org mode for .org files
-(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
-;; Basic Org mode settings
-(setq org-log-done t)  ;; Log the time when a task is marked DONE
-
-;; Keybindings for Org mode
-(global-set-key (kbd "C-c l") 'org-store-link)
-(global-set-key (kbd "C-c a") 'org-agenda)
-(global-set-key (kbd "C-c c") 'org-capture)
-
-(setq org-agenda-files '("~/org/todo.org" "~/org/projects.org"))
+(setq org-journal-dir "~/org/journal/")
+(setq org-journal-date-format "%A, %d %B %Y")
+(require 'org-journal)
