@@ -1,3 +1,4 @@
+
 ;; 8:16 https://www.youtube.com/watch?v=IspAZtNTslY 
 (setq inhibit-startup-message t)
 
@@ -160,10 +161,45 @@
  '(custom-safe-themes
    '("8a379e7ac3a57e64de672dd744d4730b3bdb88ae328e8106f95cd81cbd44e0b6" "dcb1cc804b9adca583e4e65755895ba0a66ef82d29464cf89a78b88ddac6ca53" "8d3ef5ff6273f2a552152c7febc40eabca26bae05bd12bc85062e2dc224cde9a" "7c28419e963b04bf7ad14f3d8f6655c078de75e4944843ef9522dbecfcd8717d" "8c7e832be864674c220f9a9361c851917a93f921fedb7717b1b5ece47690c098" default))
  '(package-selected-packages
-   '(doom-modeline-now-playing ewal-doom-themes which-key vertico use-package undo-fu spacemacs-theme rainbow-delimiters org-journal org-bullets monokai-pro-theme ivy-rich helpful gruvbox-theme general evil-collection dracula-theme doom-themes doom-modeline counsel all-the-icons)))
+   '(forge projectile doom-modeline-now-playing ewal-doom-themes which-key vertico use-package undo-fu spacemacs-theme rainbow-delimiters org-journal org-bullets monokai-pro-theme ivy-rich helpful gruvbox-theme general evil-collection dracula-theme doom-themes doom-modeline counsel all-the-icons)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+(use-package hydra)
+(defhydra hydra-text-scale (:timeout 4)
+  "scale text"
+  ("j" text-scale-increase "in")
+  ("k" text-scale-decrease "out")
+  ("f" nil "finished" :exit t))
+
+(rune/leader-keys
+  "ts" (hydra-text-scale/body :which-key "scale-text"))
+
+(use-package projectile
+  :diminish projectile-mode
+  :config (projectile-mode)
+  :custom ((projectile-completion-system 'ivy))
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
+  :init
+  ;; NOTE: Set this to the folder where you keep your Git repos!
+  (when (file-directory-p "~/Projects/Code")
+    (setq projectile-project-search-path '("~/Projects/Code")))
+  (setq projectile-switch-project-action #'projectile-dired))
+
+
+(use-package counsel-projectile
+  :config (counsel-projectile-mode))
+
+(use-package magit
+  :custom
+  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+
+(use-package evil-magit
+  :after magit)
+
+;;(use-package forge)
