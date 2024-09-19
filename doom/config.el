@@ -40,8 +40,36 @@
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/org/")
+;;(setq org-directory "~/org/")
+;;
+;;(setq org-directory "/mnt/c/Users/PaulBoquant/Dropbox/org/")
+(setq org-directory "/mnt/c/Users/PaulBoquant/Nextcloud/org/")
 
+(setq org-agenda-files
+'("/mnt/c/Users/PaulBoquant/Nextcloud/org/Work.org"
+  "/mnt/c/Users/PaulBoquant/Nextcloud/org/Personal.org"
+  "/mnt/c/Users/PaulBoquant/Nextcloud/org/Habits.org"
+  "/mnt/c/Users/PaulBoquant/Nextcloud/org/Birthdays.org"
+  ))
+
+  (setq org-tag-alist
+    '((:startgroup)
+       ; Put mutually exclusive tags here
+       (:endgroup)
+       ("@errand" . ?E)
+       ("@home" . ?H)
+       ("@work" . ?W)
+       ("agenda" . ?a)
+       ("planning" . ?p)
+       ("publish" . ?P)
+       ("batch" . ?b)
+       ("note" . ?n)
+       ("idea" . ?i)))
+
+
+  (require 'org-habit)
+  (add-to-list 'org-modules 'org-habit)
+  (setq org-habit-graph-column 60)
 
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
