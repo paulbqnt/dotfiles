@@ -50,6 +50,7 @@
   "/mnt/c/Users/PaulBoquant/Nextcloud/org/Personal.org"
   "/mnt/c/Users/PaulBoquant/Nextcloud/org/Habits.org"
   "/mnt/c/Users/PaulBoquant/Nextcloud/org/Birthdays.org"
+  "/mnt/c/Users/PaulBoquant/Nextcloud/org/Journal.org"
   ))
 
   (setq org-tag-alist
@@ -124,3 +125,7 @@
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/emacs-mozc")
 (require 'mozc)
 (prefer-coding-system 'utf-8)
+
+(require 'org-habit)
+(define-key org-mode-map (kbd "C-c h") 'org-habit-stats-view-habit-at-point)
+(define-key org-agenda-mode-map (kbd "H") 'org-habit-stats-view-habit-at-point-agenda)
